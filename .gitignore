@@ -1,0 +1,24 @@
+# Root
+.env
+.DS_Store
+node_modules/
+vendor/
+*.log
+
+# Backend Symfony
+/backend/var/
+/backend/vendor/
+/backend/.env.local
+/backend/.env.test.local
+/backend/public/bundles/
+/backend/config/secrets/
+/backend/phpunit.xml
+
+# Frontend React
+/frontend/node_modules/
+/frontend/build/
+/frontend/.env.local
+/frontend/.DS_Store
+
+# Docker
+docker/db-data
