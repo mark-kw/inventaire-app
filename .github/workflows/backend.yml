@@ -1,0 +1,37 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+
+jobs:
+  symfony:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: test
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+        ports: [5432:5432]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: pdo_pgsql
+
+    - name: Install dependencies
+      run: |
+        cd backend
+        composer install --no-interaction --prefer-dist
+
+    - name: Run Symfony tests
+      run: |
+        cd backend
+        php bin/phpunit
