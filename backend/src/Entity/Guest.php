@@ -8,7 +8,28 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Ignore;
+
 #[ORM\Entity(repositoryClass: GuestRepository::class)]
+#[ApiResource(operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'firstName' => 'ipartial',
+    'lastName' => 'ipartial',
+    'email' => 'ipartial',
+    'phone' => 'ipartial',
+    'nationality' => 'ipartial'
+])]
+#[ApiFilter(OrderFilter::class, properties: ['lastName', 'firstName', 'id'])]
 class Guest
 {
     #[ORM\Id]
@@ -44,6 +65,7 @@ class Guest
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'guest')]
+    #[Ignore]
     private Collection $reservations;
 
     public function __construct()

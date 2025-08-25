@@ -7,8 +7,30 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\RoomStatus;
+
+use Symfony\Component\Serializer\Annotation\Ignore;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+
+
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
+#[ApiResource(operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'status' => 'exact',     // enum
+    'type'   => 'exact',     // IRI /api/room_types/{id}
+    'number' => 'ipartial'
+])]
+#[ApiFilter(OrderFilter::class, properties: ['number', 'id'])]
 class Room
 {
     #[ORM\Id]
@@ -26,6 +48,9 @@ class Room
     #[ORM\JoinColumn(nullable: false)]
     private ?RoomType $type = null;
 
+    #[ORM\Column(type: 'string', enumType: RoomStatus::class)]
+    private RoomStatus $status = RoomStatus::AVAILABLE;
+
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $capacityAdults = 1;
 
@@ -42,18 +67,26 @@ class Room
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'room')]
+    #[Ignore]
     private Collection $reservations;
 
     /**
      * @var Collection<int, HousekeepingLog>
      */
     #[ORM\OneToMany(targetEntity: HousekeepingLog::class, mappedBy: 'room')]
+    #[Ignore]
     private Collection $housekeepingLogs;
+
+    /** @var Collection<int, MaintenanceTask> */
+    #[ORM\OneToMany(mappedBy: 'room', targetEntity: MaintenanceTask::class)]
+    #[Ignore]
+    private Collection $maintenanceTasks;
 
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
         $this->housekeepingLogs = new ArrayCollection();
+        $this->maintenanceTasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,10 +123,20 @@ class Room
         return $this->type;
     }
 
-    public function setType(?RoomType $type): static
+    public function setType(?RoomType $type): self
     {
         $this->type = $type;
 
+        return $this;
+    }
+
+    public function getStatus(): RoomStatus
+    {
+        return $this->status;
+    }
+    public function setStatus(RoomStatus $status): self
+    {
+        $this->status = $status;
         return $this;
     }
 
@@ -203,5 +246,11 @@ class Room
         }
 
         return $this;
+    }
+
+    /** @return Collection<int, MaintenanceTask> */
+    public function getMaintenanceTasks(): Collection
+    {
+        return $this->maintenanceTasks;
     }
 }

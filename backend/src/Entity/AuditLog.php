@@ -5,10 +5,28 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+
 
 #[ORM\Entity]
 #[ORM\Table(name: 'audit_logs')]
 #[ORM\Index(columns: ['entity', 'entity_id'], name: 'idx_audit_entity')]
+#[ApiResource(operations: [new Get(), new GetCollection()])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'entity' => 'exact',
+    'entityId' => 'exact',
+    'actor' => 'exact',
+    'action' => 'ipartial'
+])]
+#[ApiFilter(DateFilter::class, properties: ['createdAt'])]
+#[ApiFilter(OrderFilter::class, properties: ['createdAt'])]
+
 class AuditLog
 {
     // Note: BIGINT est mappé en string par défaut pour compat PHP 32/64
@@ -27,8 +45,7 @@ class AuditLog
 
 
     #[ORM\Column(type: 'uuid', nullable: true)]
-    private ?string $entityId = null; // UUID string
-
+    private ?string $entityId = null;
 
     #[ORM\Column(length: 40)]
     private string $action;

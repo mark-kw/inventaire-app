@@ -8,7 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Ignore;
+
 #[ORM\Entity(repositoryClass: RoomTypeRepository::class)]
+#[ApiResource]
 class RoomType
 {
     #[ORM\Id]
@@ -26,6 +30,7 @@ class RoomType
      * @var Collection<int, Room>
      */
     #[ORM\OneToMany(targetEntity: Room::class, mappedBy: 'type')]
+    #[Ignore]
     private Collection $rooms;
 
     public function __construct()

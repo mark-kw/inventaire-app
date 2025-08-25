@@ -2,7 +2,6 @@
 
 namespace App\Enum;
 
-
 enum PaymentMethod: string
 {
     case CASH = 'cash';

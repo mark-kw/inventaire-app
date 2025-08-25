@@ -5,19 +5,35 @@ namespace App\Entity;
 
 use App\Enum\MaintenanceStatus;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
 
 #[ORM\Entity]
 #[ORM\Table(name: 'maintenance_tasks')]
+#[ApiResource(operations: [new Get(), new GetCollection(), new Post(), new Patch()])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'room'      => 'exact',
+    'status'    => 'exact', // enum
+    'createdBy' => 'exact',
+    'title'     => 'ipartial'
+])]
+#[ApiFilter(DateFilter::class, properties: ['createdAt', 'resolvedAt'])]
+#[ApiFilter(OrderFilter::class, properties: ['status', 'createdAt'])]
 class MaintenanceTask
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
 
 
     #[ORM\ManyToOne(inversedBy: 'maintenanceTasks')]
@@ -54,7 +70,7 @@ class MaintenanceTask
     }
 
 
-    public function getId(): ?Uuid
+    public function getId(): ?int
     {
         return $this->id;
     }

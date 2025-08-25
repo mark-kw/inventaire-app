@@ -5,8 +5,31 @@ namespace App\Entity;
 use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\ReservationStatus;
+
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
+#[ApiResource(operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'status' => 'exact',     // enum
+    'room'   => 'exact',     // IRI /api/rooms/{id}
+    'guest'  => 'exact',     // IRI /api/guests/{id}
+    'channel' => 'exact',
+    'code'   => 'ipartial'
+])]
+#[ApiFilter(DateFilter::class, properties: ['arrivalDate', 'departureDate', 'checkinAt', 'checkoutAt'])]
+#[ApiFilter(OrderFilter::class, properties: ['arrivalDate', 'departureDate', 'code', 'status'])]
 class Reservation
 {
     #[ORM\Id]
@@ -25,6 +48,9 @@ class Reservation
     #[ORM\JoinColumn(nullable: false)]
     private ?Room $room = null;
 
+    #[ORM\Column(type: 'string', enumType: ReservationStatus::class)]
+    private ReservationStatus $status = ReservationStatus::PENDING;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $arrivalDate = null;
 
@@ -41,7 +67,10 @@ class Reservation
     private ?string $totalAmount = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $XOF = null;
+    private ?string $currency = 'XOF';
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $checkinAt = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $checkoutAt = null;
@@ -87,6 +116,17 @@ class Reservation
     {
         $this->room = $room;
 
+        return $this;
+    }
+
+    public function getStatus(): ReservationStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(ReservationStatus $status): self
+    {
+        $this->status = $status;
         return $this;
     }
 
@@ -150,15 +190,26 @@ class Reservation
         return $this;
     }
 
-    public function getXOF(): ?\DateTimeImmutable
+    public function getCurrency(): ?string
     {
-        return $this->XOF;
+        return $this->currency;
     }
 
-    public function setXOF(?\DateTimeImmutable $XOF): static
+    public function setCurrency(?string $currency): static
     {
-        $this->XOF = $XOF;
+        $this->currency = $currency;
 
+        return $this;
+    }
+
+    public function getCheckinAt(): ?\DateTimeImmutable
+    {
+        return $this->checkinAt;
+    }
+
+    public function setCheckinAt(?\DateTimeImmutable $dt): self
+    {
+        $this->checkinAt = $dt;
         return $this;
     }
 

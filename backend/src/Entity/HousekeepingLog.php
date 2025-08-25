@@ -6,7 +6,26 @@ use App\Enum\RoomStatus;
 use App\Repository\HousekeepingLogRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+
+
+
 #[ORM\Entity(repositoryClass: HousekeepingLogRepository::class)]
+#[ApiResource(operations: [new Get(), new GetCollection(), new Post()])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'room'      => 'exact',
+    'statusTo'  => 'exact',
+    'changedBy' => 'exact'
+])]
+#[ApiFilter(DateFilter::class, properties: ['changedAt'])]
+#[ApiFilter(OrderFilter::class, properties: ['changedAt'])]
 class HousekeepingLog
 {
     #[ORM\Id]

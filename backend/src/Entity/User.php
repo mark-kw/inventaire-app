@@ -5,9 +5,11 @@ namespace App\Entity;
 use App\Enum\UserRole;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -57,9 +59,9 @@ class User
         return $this;
     }
 
-    public function getPasswordHash(): ?string
+    public function getPassword(): ?string
     {
-        return $this->passwordHash;
+        return $this->passwordHash; // ou $this->password si tu l'as nommé ainsi
     }
 
     public function setPasswordHash(string $passwordHash): static
@@ -76,7 +78,8 @@ class User
 
     public function getRoles(): array
     {
-        return ['ROLE_' . $this->role->name];
+        $roles = ['ROLE_' . $this->role->name, 'ROLE_USER'];
+        return array_values(array_unique($roles));
     }
 
     public function getRole(): UserRole
@@ -87,5 +90,11 @@ class User
     {
         $this->role = $r;
         return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 }
