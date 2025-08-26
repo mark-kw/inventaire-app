@@ -18,7 +18,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
 
@@ -26,8 +26,8 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 #[ApiResource(operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()])]
 #[ApiFilter(SearchFilter::class, properties: [
-    'status' => 'exact',     // enum
-    'type'   => 'exact',     // IRI /api/room_types/{id}
+    'status' => 'exact',
+    'type'   => 'exact',
     'number' => 'ipartial'
 ])]
 #[ApiFilter(OrderFilter::class, properties: ['number', 'id'])]
