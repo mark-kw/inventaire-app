@@ -13,6 +13,9 @@ import Rooms from "./pages/Rooms";
 // import Reservations from "./pages/Reservations";
 
 import "./index.css";
+import Planning from "./pages/Planning";
+import Check from "./pages/Check";
+import RoomStatus from "./pages/RoomStatus";
 
 attachInterceptors();
 
@@ -31,7 +34,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             }
           >
             <Route index element={<Dashboard />} />
-            <Route path="rooms" element={<Rooms />} />
+            <Route path="planning" element={<Planning />} />
+            <Route path="reservations" element={<Rooms />} />
+            <Route path="check" element={<Check />} />
+            <Route path="status" element={<RoomStatus />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

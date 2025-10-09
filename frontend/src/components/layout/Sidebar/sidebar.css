@@ -1,0 +1,234 @@
+/* src/ui/navigation/sidebar.css */
+:root {
+    --sb-bg: #ffffff;
+    --sb-border: #e9eef2;
+    --sb-muted: #7c8b97;
+    --sb-text: #213547;
+    --sb-primary: #1fb6cf;
+    /* turquoise */
+    --sb-primary-strong: #1297ad;
+    --sb-active-bg: linear-gradient(90deg, #1fb6cf, #1aa4ba);
+    --sb-badge: #ff6b6b;
+    --radius: 16px;
+    --shadow: 0 8px 30px rgba(25, 42, 70, 0.08);
+}
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--sb-bg);
+    border-right: 1px solid var(--sb-border);
+    box-shadow: var(--shadow);
+    transition: width .25s ease;
+    z-index: 10;
+}
+
+.sb-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+    border-bottom: 1px solid var(--sb-border);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: var(--sb-text);
+}
+
+.brand__logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: var(--sb-active-bg);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+}
+
+.brand__text {
+    font-size: 22px;
+    letter-spacing: .5px;
+}
+
+.sb-toggle {
+    margin-left: auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--sb-border);
+    background: #f7fafc;
+    color: var(--sb-muted);
+    cursor: pointer;
+}
+
+.sb-toggle:hover {
+    color: var(--sb-text);
+}
+
+.sb-nav {
+    padding: 10px 10px 16px;
+    overflow-y: auto;
+}
+
+.sb-section {
+    margin: 10px 0 18px;
+}
+
+.sb-section__title {
+    padding: 12px 12px;
+    color: var(--sb-muted);
+    font-size: 12px;
+    letter-spacing: .12em;
+    font-weight: 700;
+}
+
+.sb-section__list {
+    display: grid;
+    gap: 8px;
+}
+
+.sb-item {
+    display: grid;
+    grid-template-columns: 40px 1fr auto auto;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--sb-text);
+    outline: none;
+}
+
+.sb-item:hover {
+    background: #f4fbfd;
+}
+
+.sb-item:focus-visible {
+    box-shadow: 0 0 0 3px rgba(31, 182, 207, .25);
+}
+
+.sb-item__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    color: var(--sb-primary-strong);
+    background: #e9f8fb;
+}
+
+.sb-item.is-active {
+    background: var(--sb-active-bg);
+    color: white;
+}
+
+.sb-item.is-active .sb-item__icon {
+    background: transparent;
+    color: white;
+}
+
+.sb-item__label {
+    font-weight: 600;
+}
+
+.sb-item__trail {
+    opacity: .9;
+}
+
+.sb-item__badge {
+    display: inline-grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    margin-left: 6px;
+    border-radius: 999px;
+    background: var(--sb-badge);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    transform: scale(0);
+    transition: transform .2s;
+}
+
+.sb-item__badge.show {
+    transform: scale(1);
+}
+
+.sb-footer {
+    margin-top: auto;
+    padding: 14px;
+    border-top: 1px solid var(--sb-border);
+}
+
+.sb-profile {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 10px;
+    align-items: center;
+    text-decoration: none;
+    color: var(--sb-text);
+    padding: 8px 10px;
+    border-radius: 12px;
+}
+
+.sb-profile:hover {
+    background: #f6f9fb;
+}
+
+.sb-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: #d7eef3;
+    color: #1aa4ba;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.sb-profile__name {
+    font-weight: 700;
+}
+
+.sb-profile__role {
+    color: var(--sb-muted);
+    font-size: 12px;
+}
+
+/* Collapsed state */
+.sidebar.collapsed .sb-section__title {
+    display: none;
+}
+
+.sidebar.collapsed .sb-item {
+    grid-template-columns: 40px;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 14px;
+}
+
+.sidebar.collapsed .sb-item__badge,
+.sidebar.collapsed .sb-item__label,
+.sidebar.collapsed .sb-item__trail,
+.sidebar.collapsed .sb-profile__name,
+.sidebar.collapsed .sb-profile__role {
+    display: none;
+}
+
+.sidebar.collapsed .sb-header {
+    padding: 16px;
+}
+
+.sidebar.collapsed .brand__text {
+    display: none;
+}
