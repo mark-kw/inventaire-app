@@ -17,10 +17,15 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
-#[ApiResource(operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()])]
+#[ApiResource(
+    operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()],
+    normalizationContext: ['groups' => ['reservation:read']],
+    denormalizationContext: ['groups' => ['reservation:write']]
+)]
 #[ApiFilter(SearchFilter::class, properties: [
     'status' => 'exact',     // enum
     'room'   => 'exact',     // IRI /api/rooms/{id}
@@ -40,41 +45,53 @@ class Reservation
     #[ORM\Column(length: 18)]
     private ?string $code = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Guest $guest = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Room $room = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: 'string', enumType: ReservationStatus::class)]
     private ReservationStatus $status = ReservationStatus::PENDING;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $arrivalDate = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $departureDate = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $adults = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $children = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
     private ?string $totalAmount = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(nullable: true)]
     private ?string $currency = 'XOF';
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $checkinAt = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $checkoutAt = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 

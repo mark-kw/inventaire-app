@@ -21,7 +21,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
-
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 #[ApiResource(operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()])]
@@ -38,28 +38,36 @@ class Room
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(length: 20)]
     private ?string $number = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(length: 120, nullable: true)]
     private ?string $name = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\ManyToOne(inversedBy: 'rooms')]
     #[ORM\JoinColumn(nullable: false)]
     private ?RoomType $type = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: 'string', enumType: RoomStatus::class)]
     private RoomStatus $status = RoomStatus::AVAILABLE;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $capacityAdults = 1;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $capacityChildren = 0;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
     private ?float $nightPrice = 0.00;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(length: 3)]
     private ?string $currency = "XOF";
 

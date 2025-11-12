@@ -20,6 +20,8 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
+use Symfony\Component\Serializer\Annotation\Groups;
+
 #[ORM\Entity(repositoryClass: GuestRepository::class)]
 #[ApiResource(operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()])]
 #[ApiFilter(SearchFilter::class, properties: [
@@ -37,27 +39,35 @@ class Guest
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(length: 80)]
     private ?string $firstName = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(length: 80)]
     private ?string $lastName = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(length: 160, nullable: true)]
     private ?string $email = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(length: 40, nullable: true)]
     private ?string $phone = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $nationality = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(length: 40, nullable: true)]
     private ?string $idType = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(length: 80, nullable: true)]
     private ?string $idNumber = null;
 
+    #[Groups(['reservation:read'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $specialRequests = null;
 
